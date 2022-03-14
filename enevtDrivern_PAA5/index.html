@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAA5</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+    <script src="objects.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+</head>
+<body onload="getUsers()">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Prep Assesment 5</a>
+        </div>
+        </nav>
+    <div class="container mt-5">
+        <button type="button" class="btn btn-primary" onclick="add()">Load data</button>
+        <button type="button" class="btn btn-secondary" onclick="remove()">Erase data</button>
+
+        <table class="table table-hover" id="tbl">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody class="table-light" id="ttbody"> 
+              
+            </tbody>
+          </table>
+    </div>
+      
+    
+
+    <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
+    <script>
+        let db = new Localbase('db')
+        const ttbody = document.getElementById('ttbody');
+        //let a = db.collection('items').get()
+        let chk = 0
+        var myModal = document.getElementById('myModal')
+        let name = ""
+        let Price = ""
+        let image = ""
+        
+
+        function moddd(){
+            console.log("Hello??")
+        }
+
+      
+       
+        async function add() {
+            db.collection('items').orderBy('name').get().then(items => {
+                var valueArr = items.map(function(item){ return item.name });
+                var isDuplicate = valueArr.some(function(item, idx){ 
+                return valueArr.indexOf(item) != idx 
+                });
+
+                if(isDuplicate==false && items.length < 16){
+                    for (let i = 0; i < objects.length; i++){
+                        chk +=1
+                        db.collection('items').add(objects[i])
+                        let newRow = ttbody.insertRow()
+                        let cell = newRow.insertCell()
+                        name = objects[i].name
+                        Price = objects[i].price
+                        image = objects[i].image
+
+                        cell.innerText = i+1
+
+                        cell = newRow.insertCell()  
+                        cell.innerText = objects[i].name
+
+                        cell = newRow.insertCell()
+                        cell.innerText = "P"+objects[i].price
+
+                        cell = newRow.insertCell()
+                        cell.innerHTML = "  <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#myModal"+i+"' onclick='moddd()'>View</button>     <div class='modal' id='myModal"+i+"'> <div class='modal-dialog' role='document'> <div class='modal-content'> <div class='modal-header' <h5 class='modal-title'>Item</h5> <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'> <span aria-hidden='false'></span> </button> </div> <div class='modal-body'> <img src ='"+image+"' width=250px, height=300px> <p id='pname'>"+name+"</p>   <p id='pprice'>P"+Price+"</p>  </div><div class='modal-footer'> <button type='button' class='btn btn-primary'>Save changes</button> <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button> </div>  </div> </div> </div>"
+                    }
+                }else{
+                    if(isDuplicate == false && items.length == 16 && chk == 0){
+                        chk+=1
+                        console.log(chk)
+                        for (let i = 0; i < objects.length; i++){
+                            let newRow = ttbody.insertRow()
+                            let cell = newRow.insertCell()
+                            name = objects[i].name
+                            Price = objects[i].price
+                            image = objects[i].image
+                            console.log(name)
+                            console.log(Price)
+                            cell.innerText = i+1
+
+                            cell = newRow.insertCell()
+                            cell.innerText = name
+
+                            cell = newRow.insertCell()
+                            cell.innerText = "P"+Price
+
+                            cell = newRow.insertCell()
+                            cell.innerHTML = " <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#myModal"+i+"' onclick='moddd()'>View</button>     <div class='modal' id='myModal"+i+"'> <div class='modal-dialog' role='document'> <div class='modal-content'> <div class='modal-header' <h5 class='modal-title'>Item</h5> <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'> <span aria-hidden='false'></span> </button> </div> <div class='modal-body'> <img src ='"+image+"' width=250px, height=300px> <p id='pname'>"+name+"</p>   <p id='pprice'>P"+Price+"</p>  </div><div class='modal-footer'> <button type='button' class='btn btn-primary'>Save changes</button> <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button> </div>  </div> </div> </div>"
+                            
+                    }
+                }
+                console.log(isDuplicate)
+                console.log(items.length)             
+            }               
+        })   
+            
+            }
+ 
+        
+       
+            
+       async function getUsers() {
+            try {
+                let items = await db.collection('items').orderBy('id').get()
+          
+            }
+            catch(error) {
+                console.log('error: ', error)
+            }
+        }
+        
+       
+        function remove(){
+            for(let i = 0; i < objects.length; i++){
+                db.collection('items').delete(objects[i])
+
+            }
+            document.getElementById('ttbody').innerHTML = '';
+            
+        }
+
+
+    </script>
+    
+
+</body>
+</html>
